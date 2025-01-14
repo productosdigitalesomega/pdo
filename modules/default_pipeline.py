@@ -72,8 +72,8 @@ def refresh_base_model(name, vae_name=None):
         return
 
     model_base = core.load_model(filename, vae_filename)
-    print(f'Base model loaded: {model_base.filename}')
-    print(f'VAE loaded: {model_base.vae_filename}')
+    #print(f'Base model loaded: {model_base.filename}')
+    #print(f'VAE loaded: {model_base.vae_filename}')
     return
 
 
@@ -90,11 +90,11 @@ def refresh_refiner_model(name):
     model_refiner = core.StableDiffusionModel()
 
     if name == 'None':
-        print(f'Refiner unloaded.')
+        #print(f'Refiner unloaded.')
         return
 
     model_refiner = core.load_model(filename)
-    print(f'Refiner model loaded: {model_refiner.filename}')
+    #print(f'Refiner model loaded: {model_refiner.filename}')
 
     if isinstance(model_refiner.unet.model, SDXL):
         model_refiner.clip = None
@@ -148,13 +148,14 @@ def clip_encode_single(clip, text, verbose=False):
     cached = clip.fcs_cond_cache.get(text, None)
     if cached is not None:
         if verbose:
-            print(f'[CLIP Cached] {text}')
+           # print(f'[CLIP Cached] {text}')
         return cached
     tokens = clip.tokenize(text)
     result = clip.encode_from_tokens(tokens, return_pooled=True)
     clip.fcs_cond_cache[text] = result
     if verbose:
-        print(f'[CLIP Encoded] {text}')
+       # print(f'[CLIP Encoded] {text}')
+        
     return result
 
 
