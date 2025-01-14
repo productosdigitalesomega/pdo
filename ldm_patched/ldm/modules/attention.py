@@ -20,7 +20,7 @@ ops = ldm_patched.modules.ops.disable_weight_init
 
 # CrossAttn precision handling
 if args.disable_attention_upcast:
-    print("disabling upcasting of attention")
+    #print("disabling upcasting of attention")
     _ATTN_PRECISION = "fp16"
 else:
     _ATTN_PRECISION = "fp32"
@@ -332,17 +332,17 @@ def attention_pytorch(q, k, v, heads, mask=None):
 optimized_attention = attention_basic
 
 if model_management.xformers_enabled():
-    print("Using xformers cross attention")
+    #print("Using xformers cross attention")
     optimized_attention = attention_xformers
 elif model_management.pytorch_attention_enabled():
-    print("Using pytorch cross attention")
+    #print("Using pytorch cross attention")
     optimized_attention = attention_pytorch
 else:
     if args.attention_split:
-        print("Using split optimization for cross attention")
+        #print("Using split optimization for cross attention")
         optimized_attention = attention_split
     else:
-        print("Using sub quadratic optimization for cross attention, if you have memory or speed issues try using: --attention-split")
+        #print("Using sub quadratic optimization for cross attention, if you have memory or speed issues try using: --attention-split")
         optimized_attention = attention_sub_quad
 
 optimized_attention_masked = optimized_attention
