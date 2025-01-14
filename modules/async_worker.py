@@ -839,6 +839,7 @@ def worker():
         async_task.performance_loras += [(modules.config.downloading_sdxl_lcm_lora(), 1.0)]
         if async_task.refiner_model_name != 'None':
             #print(f'Refiner disabled in LCM mode.')
+            print()
         async_task.refiner_model_name = 'None'
         async_task.sampler_name = 'lcm'
         async_task.scheduler_name = 'lcm'
@@ -1304,6 +1305,7 @@ def worker():
                     continue
                 else:
                     #print('User stopped')
+                    print()
                     break
 
             del task['c'], task['uc']  # Save memory
@@ -1368,6 +1370,7 @@ def worker():
                 extras = {}
                 if enhance_mask_model == 'sam':
                     #print(f'[Enhance] Searching for "{enhance_mask_dino_prompt_text}"')
+                    print()
                 elif enhance_mask_model == 'u2net_cloth_seg':
                     extras['cloth_category'] = enhance_mask_cloth_category
 
