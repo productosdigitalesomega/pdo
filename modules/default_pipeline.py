@@ -149,13 +149,14 @@ def clip_encode_single(clip, text, verbose=False):
     if cached is not None:
         if verbose:
            # print(f'[CLIP Cached] {text}')
+            print()
         return cached
     tokens = clip.tokenize(text)
     result = clip.encode_from_tokens(tokens, return_pooled=True)
     clip.fcs_cond_cache[text] = result
     if verbose:
        # print(f'[CLIP Encoded] {text}')
-        
+        print()
     return result
 
 
@@ -243,7 +244,7 @@ def refresh_everything(refiner_model_name, base_model_name, loras,
     final_refiner_vae = None
 
     if use_synthetic_refiner and refiner_model_name == 'None':
-        print('Synthetic Refiner Activated')
+        #print('Synthetic Refiner Activated')
         refresh_base_model(base_model_name, vae_name)
         synthesize_refiner_model()
     else:
@@ -349,15 +350,15 @@ def process_diffusion(positive_cond, negative_cond, steps, switch, width, height
             if denoise > (float(steps - switch) / float(steps)) ** 0.834:  # karras 0.834
                 target_unet, target_vae, target_refiner_unet, target_refiner_vae \
                     = final_unet, final_vae, None, None
-                print(f'[Sampler] only use Base because of partial denoise.')
+                #print(f'[Sampler] only use Base because of partial denoise.')
             else:
                 positive_cond = clip_separate(positive_cond, target_model=final_refiner_unet.model, target_clip=final_clip)
                 negative_cond = clip_separate(negative_cond, target_model=final_refiner_unet.model, target_clip=final_clip)
                 target_unet, target_vae, target_refiner_unet, target_refiner_vae \
                     = final_refiner_unet, final_refiner_vae, None, None
-                print(f'[Sampler] only use Refiner because of partial denoise.')
+               # print(f'[Sampler] only use Refiner because of partial denoise.')
 
-    print(f'[Sampler] refiner_swap_method = {refiner_swap_method}')
+    #print(f'[Sampler] refiner_swap_method = {refiner_swap_method}')
 
     if latent is None:
         initial_latent = core.generate_empty_latent(width=width, height=height, batch_size=1)
@@ -368,7 +369,7 @@ def process_diffusion(positive_cond, negative_cond, steps, switch, width, height
     sigma_min, sigma_max = minmax_sigmas[minmax_sigmas > 0].min(), minmax_sigmas.max()
     sigma_min = float(sigma_min.cpu().numpy())
     sigma_max = float(sigma_max.cpu().numpy())
-    print(f'[Sampler] sigma_min = {sigma_min}, sigma_max = {sigma_max}')
+    #print(f'[Sampler] sigma_min = {sigma_min}, sigma_max = {sigma_max}')
 
     modules.patch.BrownianTreeNoiseSamplerPatched.global_init(
         initial_latent['samples'].to(ldm_patched.modules.model_management.get_torch_device()),
@@ -414,12 +415,12 @@ def process_diffusion(positive_cond, negative_cond, steps, switch, width, height
             previewer_end=steps,
             disable_preview=disable_preview
         )
-        print('Refiner swapped by changing ksampler. Noise preserved.')
+       # print('Refiner swapped by changing ksampler. Noise preserved.')
 
         target_model = target_refiner_unet
         if target_model is None:
             target_model = target_unet
-            print('Use base model to refine itself - this may because of developer mode.')
+            #print('Use base model to refine itself - this may because of developer mode.')
 
         sampled_latent = core.ksampler(
             model=target_model,
@@ -465,12 +466,12 @@ def process_diffusion(positive_cond, negative_cond, steps, switch, width, height
             previewer_end=steps,
             disable_preview=disable_preview
         )
-        print('Fooocus VAE-based swap.')
+        #print('Fooocus VAE-based swap.')
 
         target_model = target_refiner_unet
         if target_model is None:
             target_model = target_unet
-            print('Use base model to refine itself - this may because of developer mode.')
+            #print('Use base model to refine itself - this may because of developer mode.')
 
         sampled_latent = vae_parse(sampled_latent)
 
