@@ -202,11 +202,11 @@ def worker():
     from modules.meta_parser import get_metadata_parser
 
     pid = os.getpid()
-    print(f'Started worker with PID {pid}')
+    #print(f'Started worker with PID {pid}')
 
     try:
         async_gradio_app = shared.gradio_root
-        flag = f'''App started successful. Use the app with {str(async_gradio_app.local_url)} or {str(async_gradio_app.server_name)}:{str(async_gradio_app.server_port)}'''
+        flag = f'''La aplicación comenzó exitosamente. Utilice la aplicación con {str(async_gradio_app.local_url)} or {str(async_gradio_app.server_name)}:{str(async_gradio_app.server_port)}'''
         if async_gradio_app.share:
             flag += f''' or {async_gradio_app.share_url}'''
         print(flag)
@@ -214,7 +214,7 @@ def worker():
         print(e)
 
     def progressbar(async_task, number, text):
-        print(f'[Fooocus] {text}')
+        #print(f'[Fooocus] {text}')
         async_task.yields.append(['preview', (number, text, None)])
 
     def yield_result(async_task, imgs, progressbar_index, black_out_nsfw, censor=True, do_not_show_finished_images=False):
@@ -453,10 +453,10 @@ def worker():
             denoising_strength = async_task.overwrite_vary_strength
         shape_ceil = get_image_shape_ceil(uov_input_image)
         if shape_ceil < 1024:
-            print(f'[Vary] Image is resized because it is too small.')
+            #print(f'[Vary] Image is resized because it is too small.')
             shape_ceil = 1024
         elif shape_ceil > 2048:
-            print(f'[Vary] Image is resized because it is too big.')
+            #print(f'[Vary] Image is resized because it is too big.')
             shape_ceil = 2048
         uov_input_image = set_image_shape_ceil(uov_input_image, shape_ceil)
         initial_pixels = core.numpy_to_pytorch(uov_input_image)
@@ -473,7 +473,7 @@ def worker():
         B, C, H, W = initial_latent['samples'].shape
         width = W * 8
         height = H * 8
-        print(f'Final resolution is {str((width, height))}.')
+        #print(f'Final resolution is {str((width, height))}.')
         return uov_input_image, denoising_strength, initial_latent, width, height, current_progress
 
     def apply_inpaint(async_task, initial_latent, inpaint_head_model_path, inpaint_image,
@@ -538,7 +538,7 @@ def worker():
         B, C, H, W = latent_fill.shape
         height, width = H * 8, W * 8
         final_height, final_width = inpaint_worker.current_task.image.shape[:2]
-        print(f'Final resolution is {str((final_width, final_height))}, latent is {str((width, height))}.')
+        #print(f'Final resolution is {str((final_width, final_height))}, latent is {str((width, height))}.')
 
         return denoising_strength, initial_latent, width, height, current_progress
 
@@ -576,7 +576,7 @@ def worker():
             current_progress += 1
         progressbar(async_task, current_progress, f'Upscaling image from {str((W, H))} ...')
         uov_input_image = perform_upscale(uov_input_image)
-        print(f'Image upscaled.')
+        #print(f'Image upscaled.')
         if '1.5x' in uov_method:
             f = 1.5
         elif '2x' in uov_method:
@@ -585,7 +585,7 @@ def worker():
             f = 1.0
         shape_ceil = get_shape_ceil(H * f, W * f)
         if shape_ceil < 1024:
-            print(f'[Upscale] Image is resized because it is too small.')
+            #print(f'[Upscale] Image is resized because it is too small.')
             uov_input_image = set_image_shape_ceil(uov_input_image, 1024)
             shape_ceil = 1024
         else:
@@ -594,9 +594,9 @@ def worker():
         if 'fast' in uov_method:
             direct_return = True
         elif image_is_super_large:
-            print('Image is too large. Directly returned the SR image. '
-                  'Usually directly return SR image at 4K resolution '
-                  'yields better results than SDXL diffusion.')
+            #print('Image is too large. Directly returned the SR image. '
+            #      'Usually directly return SR image at 4K resolution '
+            #      'yields better results than SDXL diffusion.')
             direct_return = True
         else:
             direct_return = False
@@ -623,7 +623,7 @@ def worker():
         B, C, H, W = initial_latent['samples'].shape
         width = W * 8
         height = H * 8
-        print(f'Final resolution is {str((width, height))}.')
+        #print(f'Final resolution is {str((width, height))}.')
         return direct_return, uov_input_image, denoising_strength, initial_latent, tiled, width, height, current_progress
 
     def apply_overrides(async_task, steps, height, width):
@@ -736,7 +736,7 @@ def worker():
 
                 progressbar(async_task, current_progress, f'Preparing Fooocus text #{i + 1} ...')
                 expansion = pipeline.final_expansion(t['task_prompt'], t['task_seed'])
-                print(f'[Prompt Expansion] {expansion}')
+                #print(f'[Prompt Expansion] {expansion}')
                 t['expansion'] = expansion
                 t['positive'] = copy.deepcopy(t['positive']) + [expansion]  # Deep copy.
         if advance_progress:
@@ -755,7 +755,7 @@ def worker():
         return tasks, use_expansion, loras, current_progress
 
     def apply_freeu(async_task):
-        print(f'FreeU is enabled!')
+        #print(f'FreeU is enabled!')
         pipeline.final_unet = core.apply_freeu(
             pipeline.final_unet,
             async_task.freeu_b1,
@@ -790,13 +790,13 @@ def worker():
         return final_scheduler_name
 
     def set_hyper_sd_defaults(async_task, current_progress, advance_progress=False):
-        print('Enter Hyper-SD mode.')
+       # print('Enter Hyper-SD mode.')
         if advance_progress:
             current_progress += 1
         progressbar(async_task, current_progress, 'Downloading Hyper-SD components ...')
         async_task.performance_loras += [(modules.config.downloading_sdxl_hyper_sd_lora(), 0.8)]
         if async_task.refiner_model_name != 'None':
-            print(f'Refiner disabled in Hyper-SD mode.')
+            #print(f'Refiner disabled in Hyper-SD mode.')
         async_task.refiner_model_name = 'None'
         async_task.sampler_name = 'dpmpp_sde_gpu'
         async_task.scheduler_name = 'karras'
@@ -810,13 +810,13 @@ def worker():
         return current_progress
 
     def set_lightning_defaults(async_task, current_progress, advance_progress=False):
-        print('Enter Lightning mode.')
+        #print('Enter Lightning mode.')
         if advance_progress:
             current_progress += 1
         progressbar(async_task, 1, 'Downloading Lightning components ...')
         async_task.performance_loras += [(modules.config.downloading_sdxl_lightning_lora(), 1.0)]
         if async_task.refiner_model_name != 'None':
-            print(f'Refiner disabled in Lightning mode.')
+            #print(f'Refiner disabled in Lightning mode.')
         async_task.refiner_model_name = 'None'
         async_task.sampler_name = 'euler'
         async_task.scheduler_name = 'sgm_uniform'
@@ -830,13 +830,13 @@ def worker():
         return current_progress
 
     def set_lcm_defaults(async_task, current_progress, advance_progress=False):
-        print('Enter LCM mode.')
+        #print('Enter LCM mode.')
         if advance_progress:
             current_progress += 1
         progressbar(async_task, 1, 'Downloading LCM components ...')
         async_task.performance_loras += [(modules.config.downloading_sdxl_lcm_lora(), 1.0)]
         if async_task.refiner_model_name != 'None':
-            print(f'Refiner disabled in LCM mode.')
+            #print(f'Refiner disabled in LCM mode.')
         async_task.refiner_model_name = 'None'
         async_task.sampler_name = 'lcm'
         async_task.scheduler_name = 'lcm'
@@ -899,13 +899,13 @@ def worker():
                     inpaint_head_model_path, inpaint_patch_model_path = modules.config.downloading_inpaint_models(
                         async_task.inpaint_engine)
                     base_model_additional_loras += [(inpaint_patch_model_path, 1.0)]
-                    print(f'[Inpaint] Current inpaint model is {inpaint_patch_model_path}')
+                    #print(f'[Inpaint] Current inpaint model is {inpaint_patch_model_path}')
                     if async_task.refiner_model_name == 'None':
                         use_synthetic_refiner = True
                         async_task.refiner_switch = 0.8
                 else:
                     inpaint_head_model_path, inpaint_patch_model_path = None, None
-                    print(f'[Inpaint] Parameterized inpaint is disabled.')
+                    #print(f'[Inpaint] Parameterized inpaint is disabled.')
                 if async_task.inpaint_additional_prompt != '':
                     if async_task.prompt == '':
                         async_task.prompt = async_task.inpaint_additional_prompt
@@ -960,7 +960,7 @@ def worker():
     def stop_processing(async_task, processing_start_time):
         async_task.processing = False
         processing_time = time.perf_counter() - processing_start_time
-        print(f'Processing time (total): {processing_time:.2f} seconds')
+        #print(f'Processing time (total): {processing_time:.2f} seconds')
 
     def process_enhance(all_steps, async_task, callback, controlnet_canny_path, controlnet_cpds_path,
                         current_progress, current_task_id, denoising_strength, inpaint_disable_initial_latent,
@@ -1053,14 +1053,14 @@ def worker():
 
             except ldm_patched.modules.model_management.InterruptProcessingException:
                 if async_task.last_stop == 'skip':
-                    print('User skipped')
+                    #print('User skipped')
                     async_task.last_stop = False
                     # also skip all enhance steps for this image, but add the steps to the progress bar
                     if async_task.enhance_uov_processing_order == flags.enhancement_uov_before:
                         done_steps_inpainting += len(async_task.enhance_ctrls) * enhance_steps
                     exception_result = 'continue'
                 else:
-                    print('User stopped')
+                    #print('User stopped')
                     exception_result = 'break'
             finally:
                 done_steps_upscaling += steps
@@ -1086,7 +1086,7 @@ def worker():
         use_style = len(async_task.style_selections) > 0
 
         if async_task.base_model_name == async_task.refiner_model_name:
-            print(f'Refiner disabled because base model and refiner are same.')
+            #print(f'Refiner disabled because base model and refiner are same.')
             async_task.refiner_model_name = 'None'
 
         current_progress = 0
@@ -1097,19 +1097,19 @@ def worker():
         elif async_task.performance_selection == Performance.HYPER_SD:
             set_hyper_sd_defaults(async_task, current_progress, advance_progress=True)
 
-        print(f'[Parameters] Adaptive CFG = {async_task.adaptive_cfg}')
-        print(f'[Parameters] CLIP Skip = {async_task.clip_skip}')
-        print(f'[Parameters] Sharpness = {async_task.sharpness}')
-        print(f'[Parameters] ControlNet Softness = {async_task.controlnet_softness}')
-        print(f'[Parameters] ADM Scale = '
-              f'{async_task.adm_scaler_positive} : '
-              f'{async_task.adm_scaler_negative} : '
-              f'{async_task.adm_scaler_end}')
-        print(f'[Parameters] Seed = {async_task.seed}')
+        #print(f'[Parameters] Adaptive CFG = {async_task.adaptive_cfg}')
+        #print(f'[Parameters] CLIP Skip = {async_task.clip_skip}')
+        #print(f'[Parameters] Sharpness = {async_task.sharpness}')
+        #print(f'[Parameters] ControlNet Softness = {async_task.controlnet_softness}')
+        #print(f'[Parameters] ADM Scale = '
+        #      f'{async_task.adm_scaler_positive} : '
+        #      f'{async_task.adm_scaler_negative} : '
+        #      f'{async_task.adm_scaler_end}')
+        #print(f'[Parameters] Seed = {async_task.seed}')
 
         apply_patch_settings(async_task)
 
-        print(f'[Parameters] CFG = {async_task.cfg_scale}')
+        #print(f'[Parameters] CFG = {async_task.cfg_scale}')
 
         initial_latent = None
         denoising_strength = 1.0
@@ -1150,8 +1150,8 @@ def worker():
 
         async_task.steps, switch, width, height = apply_overrides(async_task, async_task.steps, height, width)
 
-        print(f'[Parameters] Sampler = {async_task.sampler_name} - {async_task.scheduler_name}')
-        print(f'[Parameters] Steps = {async_task.steps} - {switch}')
+        #print(f'[Parameters] Sampler = {async_task.sampler_name} - {async_task.scheduler_name}')
+        #print(f'[Parameters] Steps = {async_task.steps} - {switch}')
 
         progressbar(async_task, current_progress, 'Initializing ...')
 
@@ -1245,20 +1245,20 @@ def worker():
 
         all_steps = max(all_steps, 1)
 
-        print(f'[Parameters] Denoising Strength = {denoising_strength}')
+        #print(f'[Parameters] Denoising Strength = {denoising_strength}')
 
         if isinstance(initial_latent, dict) and 'samples' in initial_latent:
             log_shape = initial_latent['samples'].shape
         else:
             log_shape = f'Image Space {(height, width)}'
 
-        print(f'[Parameters] Initial Latent shape: {log_shape}')
+       # print(f'[Parameters] Initial Latent shape: {log_shape}')
 
         preparation_time = time.perf_counter() - preparation_start_time
-        print(f'Preparation time: {preparation_time:.2f} seconds')
+        #print(f'Preparation time: {preparation_time:.2f} seconds')
 
         final_scheduler_name = patch_samplers(async_task)
-        print(f'Using {final_scheduler_name} scheduler.')
+        #print(f'Using {final_scheduler_name} scheduler.')
 
         async_task.yields.append(['preview', (current_progress, 'Moving model to GPU ...', None)])
 
@@ -1297,19 +1297,19 @@ def worker():
 
             except ldm_patched.modules.model_management.InterruptProcessingException:
                 if async_task.last_stop == 'skip':
-                    print('User skipped')
+                    #print('User skipped')
                     async_task.last_stop = False
                     continue
                 else:
-                    print('User stopped')
+                    #print('User stopped')
                     break
 
             del task['c'], task['uc']  # Save memory
             execution_time = time.perf_counter() - execution_start_time
-            print(f'Generating and saving time: {execution_time:.2f} seconds')
+            #print(f'Generating and saving time: {execution_time:.2f} seconds')
 
         if not async_task.should_enhance:
-            print(f'[Enhance] Skipping, preconditions aren\'t met')
+            #print(f'[Enhance] Skipping, preconditions aren\'t met')
             stop_processing(async_task, processing_start_time)
             return
 
@@ -1365,7 +1365,7 @@ def worker():
 
                 extras = {}
                 if enhance_mask_model == 'sam':
-                    print(f'[Enhance] Searching for "{enhance_mask_dino_prompt_text}"')
+                    #print(f'[Enhance] Searching for "{enhance_mask_dino_prompt_text}"')
                 elif enhance_mask_model == 'u2net_cloth_seg':
                     extras['cloth_category'] = enhance_mask_cloth_category
 
@@ -1394,12 +1394,12 @@ def worker():
                                  async_task.disable_intermediate_results)
                     async_task.enhance_stats[index] += 1
 
-                print(f'[Enhance] {dino_detection_count} boxes detected')
-                print(f'[Enhance] {sam_detection_count} segments detected in boxes')
-                print(f'[Enhance] {sam_detection_on_mask_count} segments applied to mask')
+                #print(f'[Enhance] {dino_detection_count} boxes detected')
+                #print(f'[Enhance] {sam_detection_count} segments detected in boxes')
+                #print(f'[Enhance] {sam_detection_on_mask_count} segments applied to mask')
 
                 if enhance_mask_model == 'sam' and (dino_detection_count == 0 or not async_task.debugging_dino and sam_detection_on_mask_count == 0):
-                    print(f'[Enhance] No "{enhance_mask_dino_prompt_text}" detected, skipping')
+                   # print(f'[Enhance] No "{enhance_mask_dino_prompt_text}" detected, skipping')
                     continue
 
                 goals_enhance = ['inpaint']
@@ -1423,18 +1423,18 @@ def worker():
 
                 except ldm_patched.modules.model_management.InterruptProcessingException:
                     if async_task.last_stop == 'skip':
-                        print('User skipped')
+                        #print('User skipped')
                         async_task.last_stop = False
                         continue
                     else:
-                        print('User stopped')
+                        #print('User stopped')
                         exception_result = 'break'
                         break
                 finally:
                     done_steps_inpainting += enhance_steps
 
                 enhancement_task_time = time.perf_counter() - enhancement_task_start_time
-                print(f'Enhancement time: {enhancement_task_time:.2f} seconds')
+                #print(f'Enhancement time: {enhancement_task_time:.2f} seconds')
 
             if exception_result == 'break':
                 break
@@ -1457,7 +1457,7 @@ def worker():
                     break
 
             enhancement_image_time = time.perf_counter() - enhancement_image_start_time
-            print(f'Enhancement image time: {enhancement_image_time:.2f} seconds')
+            #print(f'Enhancement image time: {enhancement_image_time:.2f} seconds')
 
         stop_processing(async_task, processing_start_time)
         return
