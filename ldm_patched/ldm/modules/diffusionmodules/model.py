@@ -563,7 +563,7 @@ class Decoder(nn.Module):
         curr_res = resolution // 2**(self.num_resolutions-1)
         self.z_shape = (1,z_channels,curr_res,curr_res)
         #print("Working with z of shape {} = {} dimensions.".format(
-            self.z_shape, np.prod(self.z_shape)))
+        #    self.z_shape, np.prod(self.z_shape)))
 
         # z to block_in
         self.conv_in = ops.Conv2d(z_channels,
