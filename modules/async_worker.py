@@ -818,6 +818,7 @@ def worker():
         async_task.performance_loras += [(modules.config.downloading_sdxl_lightning_lora(), 1.0)]
         if async_task.refiner_model_name != 'None':
             #print(f'Refiner disabled in Lightning mode.')
+            print()
         async_task.refiner_model_name = 'None'
         async_task.sampler_name = 'euler'
         async_task.scheduler_name = 'sgm_uniform'
