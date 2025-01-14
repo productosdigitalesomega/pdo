@@ -56,8 +56,8 @@ class BaseModel(torch.nn.Module):
         if self.adm_channels is None:
             self.adm_channels = 0
         self.inpaint_model = False
-        print("model_type", model_type.name)
-        print("UNet ADM Dimension", self.adm_channels)
+        #print("model_type", model_type.name)
+        #print("UNet ADM Dimension", self.adm_channels)
 
     def apply_model(self, x, t, c_concat=None, c_crossattn=None, control=None, transformer_options={}, **kwargs):
         sigma = t
@@ -165,10 +165,12 @@ class BaseModel(torch.nn.Module):
         to_load = self.model_config.process_unet_state_dict(to_load)
         m, u = self.diffusion_model.load_state_dict(to_load, strict=False)
         if len(m) > 0:
-            print("unet missing:", m)
+            #print("unet missing:", m)
+            print()
 
         if len(u) > 0:
-            print("unet unexpected:", u)
+            #print("unet unexpected:", u)
+            print()
         del to_load
         return self
 
