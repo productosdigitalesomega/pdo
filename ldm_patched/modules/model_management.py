@@ -258,10 +258,9 @@ def get_torch_device_name(device):
 
 try:
     #print("Device:", get_torch_device_name(get_torch_device()))
-    continue
+    print()
 except:
-    #print("Could not pick default device.")
-    continue
+    print("Could not pick default device.")
 #print("VAE dtype:", VAE_DTYPE)
 
 current_loaded_models = []
