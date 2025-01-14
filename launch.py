@@ -2,7 +2,7 @@ import os
 import ssl
 import sys
 
-print('[System ARGV] ' + str(sys.argv))
+#print('[System ARGV] ' + str(sys.argv))
 
 root = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(root)
@@ -32,8 +32,8 @@ def prepare_environment():
                                    f"pip install torch==2.1.0 torchvision==0.16.0 --extra-index-url {torch_index_url}")
     requirements_file = os.environ.get('REQS_FILE', "requirements_versions.txt")
 
-    print(f"Python {sys.version}")
-    print(f"Fooocus version: {fooocus_version.version}")
+    #print(f"Python {sys.version}")
+    #print(f"Fooocus version: {fooocus_version.version}")
 
     if REINSTALL_ALL or not is_installed("torch") or not is_installed("torchvision"):
         run(f'"{python}" -m {torch_command}', "Installing torch and torchvision", "Couldn't install torch", live=True)
@@ -45,9 +45,9 @@ def prepare_environment():
                 if platform.python_version().startswith("3.10"):
                     run_pip(f"install -U -I --no-deps {xformers_package}", "xformers", live=True)
                 else:
-                    print("Installation of xformers is not supported in this version of Python.")
-                    print(
-                        "You can also check this and build manually: https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Xformers#building-xformers-on-windows-by-duckness")
+                    #print("Installation of xformers is not supported in this version of Python.")
+                    #print(
+                    #    "You can also check this and build manually: https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Xformers#building-xformers-on-windows-by-duckness")
                     if not is_installed("xformers"):
                         exit(0)
             elif platform.system() == "Linux":
@@ -78,11 +78,11 @@ args = ini_args()
 
 if args.gpu_device_id is not None:
     os.environ['CUDA_VISIBLE_DEVICES'] = str(args.gpu_device_id)
-    print("Set device to:", args.gpu_device_id)
+    #print("Set device to:", args.gpu_device_id)
 
 if args.hf_mirror is not None:
     os.environ['HF_MIRROR'] = str(args.hf_mirror)
-    print("Set hf_mirror to:", args.hf_mirror)
+    #print("Set hf_mirror to:", args.hf_mirror)
 
 from modules import config
 from modules.hash_cache import init_cache
@@ -92,10 +92,11 @@ os.environ["U2NET_HOME"] = config.path_inpaint
 os.environ['GRADIO_TEMP_DIR'] = config.temp_path
 
 if config.temp_path_cleanup_on_launch:
-    print(f'[Cleanup] Attempting to delete content of temp dir {config.temp_path}')
+    #print(f'[Cleanup] Attempting to delete content of temp dir {config.temp_path}')
     result = delete_folder_content(config.temp_path, '[Cleanup] ')
     if result:
-        print("[Cleanup] Cleanup successful")
+        #print("[Cleanup] Cleanup successful")
+        continue
     else:
         print(f"[Cleanup] Failed to delete content of temp dir.")
 
@@ -113,17 +114,17 @@ def download_models(default_model, previous_default_models, checkpoint_downloads
     )
 
     if args.disable_preset_download:
-        print('Skipped model download.')
+        #print('Skipped model download.')
         return default_model, checkpoint_downloads
 
     if not args.always_download_new_model:
         if not os.path.isfile(get_file_from_folder_list(default_model, config.paths_checkpoints)):
             for alternative_model_name in previous_default_models:
                 if os.path.isfile(get_file_from_folder_list(alternative_model_name, config.paths_checkpoints)):
-                    print(f'You do not have [{default_model}] but you have [{alternative_model_name}].')
-                    print(f'Fooocus will use [{alternative_model_name}] to avoid downloading new models, '
-                          f'but you are not using the latest models.')
-                    print('Use --always-download-new-model to avoid fallback and always get new models.')
+                    #print(f'You do not have [{default_model}] but you have [{alternative_model_name}].')
+                    #print(f'Fooocus will use [{alternative_model_name}] to avoid downloading new models, '
+                    #      f'but you are not using the latest models.')
+                    #print('Use --always-download-new-model to avoid fallback and always get new models.')
                     checkpoint_downloads = {}
                     default_model = alternative_model_name
                     break
