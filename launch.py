@@ -96,7 +96,7 @@ if config.temp_path_cleanup_on_launch:
     result = delete_folder_content(config.temp_path, '[Cleanup] ')
     if result:
         #print("[Cleanup] Cleanup successful")
-        continue
+        print('')
     else:
         print(f"[Cleanup] Failed to delete content of temp dir.")
 
