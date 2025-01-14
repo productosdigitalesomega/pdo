@@ -71,7 +71,8 @@ def calculate_weight_patched(self, patches, weight, key):
             w1 = v[0]
             if alpha != 0.0:
                 if w1.shape != weight.shape:
-                    print("WARNING SHAPE MISMATCH {} WEIGHT NOT MERGED {} != {}".format(key, w1.shape, weight.shape))
+                    #print("WARNING SHAPE MISMATCH {} WEIGHT NOT MERGED {} != {}".format(key, w1.shape, weight.shape))
+                    print()
                 else:
                     weight += alpha * ldm_patched.modules.model_management.cast_to_device(w1, weight.device, weight.dtype)
         elif patch_type == "lora":
@@ -447,7 +448,8 @@ def patched_load_models_gpu(*args, **kwargs):
     y = ldm_patched.modules.model_management.load_models_gpu_origin(*args, **kwargs)
     moving_time = time.perf_counter() - execution_start_time
     if moving_time > 0.1:
-        print(f'[Fooocus Model Management] Moving model(s) has taken {moving_time:.2f} seconds')
+        #print(f'[Fooocus Model Management] Moving model(s) has taken {moving_time:.2f} seconds')
+        print()
     return y
 
 
