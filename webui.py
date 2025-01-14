@@ -89,7 +89,7 @@ def generate_clicked(task: worker.AsyncTask):
                             os.remove(filepath)
 
     execution_time = time.perf_counter() - execution_start_time
-    print(f'Total time: {execution_time:.2f} seconds')
+    #print(f'Total time: {execution_time:.2f} seconds')
     return
 
 
