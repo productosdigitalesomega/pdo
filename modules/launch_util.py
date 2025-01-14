@@ -34,8 +34,8 @@ def is_installed(package):
 
 def run(command, desc=None, errdesc=None, custom_env=None, live: bool = default_command_live) -> str:
     if desc is not None:
-        print(desc)
-
+        #print(desc)
+        print()
     run_kwargs = {
         "args": command,
         "shell": True,
@@ -91,7 +91,7 @@ def requirements_met(requirements_file):
 
                 # Check if the installed version satisfies the requirement
                 if installed_version not in requirement.specifier:
-                    print(f"Version mismatch for {package}: Installed version {version_installed} does not meet requirement {requirement}")
+                    #print(f"Version mismatch for {package}: Installed version {version_installed} does not meet requirement {requirement}")
                     return False
             except Exception as e:
                 print(f"Error checking version for {package}: {e}")
