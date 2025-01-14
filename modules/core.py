@@ -70,7 +70,7 @@ class StableDiffusionModel:
         if self.unet is None:
             return
 
-        print(f'Request to load LoRAs {str(loras)} for model [{self.filename}].')
+        #print(f'Request to load LoRAs {str(loras)} for model [{self.filename}].')
 
         loras_to_load = []
 
@@ -102,21 +102,23 @@ class StableDiffusionModel:
                 continue
 
             if len(lora_unmatch) > 0:
-                print(f'Loaded LoRA [{lora_filename}] for model [{self.filename}] '
-                      f'with unmatched keys {list(lora_unmatch.keys())}')
-
+                #print(f'Loaded LoRA [{lora_filename}] for model [{self.filename}] '
+                #      f'with unmatched keys {list(lora_unmatch.keys())}')
+                print()
             if self.unet_with_lora is not None and len(lora_unet) > 0:
                 loaded_keys = self.unet_with_lora.add_patches(lora_unet, weight)
-                print(f'Loaded LoRA [{lora_filename}] for UNet [{self.filename}] '
-                      f'with {len(loaded_keys)} keys at weight {weight}.')
+                #print(f'Loaded LoRA [{lora_filename}] for UNet [{self.filename}] '
+                #      f'with {len(loaded_keys)} keys at weight {weight}.')
+                print()
                 for item in lora_unet:
                     if item not in loaded_keys:
                         print("UNet LoRA key skipped: ", item)
 
             if self.clip_with_lora is not None and len(lora_clip) > 0:
                 loaded_keys = self.clip_with_lora.add_patches(lora_clip, weight)
-                print(f'Loaded LoRA [{lora_filename}] for CLIP [{self.filename}] '
-                      f'with {len(loaded_keys)} keys at weight {weight}.')
+                #print(f'Loaded LoRA [{lora_filename}] for CLIP [{self.filename}] '
+                #      f'with {len(loaded_keys)} keys at weight {weight}.')
+                print()
                 for item in lora_clip:
                     if item not in loaded_keys:
                         print("CLIP LoRA key skipped: ", item)
