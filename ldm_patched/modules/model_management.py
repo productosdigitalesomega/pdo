@@ -395,6 +395,7 @@ def load_models_gpu(models, memory_required=0):
         else:
             if hasattr(x, "model"):
                 #print(f"Requested to load {x.model.__class__.__name__}")
+                pritn()
             models_to_load.append(loaded_model)
 
     if len(models_to_load) == 0:
