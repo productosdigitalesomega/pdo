@@ -33,7 +33,8 @@ def load_model_weights(model, sd):
             w = sd.pop(x)
             del w
     if len(m) > 0:
-        print("extra", m)
+        #print("extra", m)
+        print()
     return model
 
 def load_clip_weights(model, sd):
@@ -186,7 +187,8 @@ class VAE:
             print("Missing VAE keys", m)
 
         if len(u) > 0:
-            print("Leftover VAE keys", u)
+            #print("Leftover VAE keys", u)
+            print()
 
         if device is None:
             device = model_management.vae_device()
@@ -482,12 +484,12 @@ def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, o
 
     left_over = sd.keys()
     if len(left_over) > 0:
-        print("left over keys:", left_over)
-
+        #print("left over keys:", left_over)
+        print()
     if output_model:
         model_patcher = ldm_patched.modules.model_patcher.ModelPatcher(model, load_device=load_device, offload_device=model_management.unet_offload_device(), current_device=inital_load_device)
         if inital_load_device != torch.device("cpu"):
-            print("loaded straight to GPU")
+            #print("loaded straight to GPU")
             model_management.load_model_gpu(model_patcher)
 
     return model_patcher, clip, vae, vae_filename, clipvision
@@ -525,7 +527,8 @@ def load_unet_state_dict(sd): #load unet in diffusers format
     model.load_model_weights(new_sd, "")
     left_over = sd.keys()
     if len(left_over) > 0:
-        print("left over keys in unet:", left_over)
+        #print("left over keys in unet:", left_over)
+        print()
     return ldm_patched.modules.model_patcher.ModelPatcher(model, load_device=load_device, offload_device=offload_device)
 
 def load_unet(unet_path):
